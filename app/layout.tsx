@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Inter, Playfair_Display } from 'next/font/google'
+import { Inter, Cormorant_Garamond } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
@@ -8,61 +8,43 @@ const inter = Inter({
   variable: '--font-inter',
 })
 
-const playfair = Playfair_Display({
+const cormorant = Cormorant_Garamond({
   subsets: ['latin', 'cyrillic'],
-  variable: '--font-playfair',
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-cormorant',
 })
 
 export const metadata: Metadata = {
-  title: 'Смотрицька Перлина - Еко-готель у Кам\'янці-Подільському',
+  title: 'Тарас Бульба - Готельний комплекс у Кам\'янці-Подільському',
   description:
-    'Затишний еко-готель на 17 номерів за 2 хвилини від Старої фортеці. Ресторан з домашньою кухнею, мальовничий каньйон та відпочинок у серці історичного Кам\'янця-Подільського.',
+    'Дух козацтва у серці старого міста. Готельний комплекс «Тарас Бульба» поєднує глибоку повагу до української історії з високими стандартами сучасного сервісу.',
   keywords: [
-    'Смотрицька Перлина',
+    'Тарас Бульба',
     'готель Кам\'янець-Подільський',
-    'еко-готель',
-    'міні-готель Кам\'янець',
+    'готельний комплекс',
     'відпочинок Кам\'янець-Подільський',
-    'готель біля фортеці',
-    'Смотрицький каньйон',
+    'ресторан Кам\'янець',
+    'СПА Кам\'янець',
     'де зупинитися Кам\'янець',
     'номери Кам\'янець-Подільський',
-    'садиба Кам\'янець',
   ],
   authors: [{ name: 'IT Kamianets' }],
   creator: 'IT Kamianets',
   openGraph: {
     type: 'website',
-    url: 'https://smotrytska-perlyna.itkamianets.com/',
-    title: 'Смотрицька Перлина - Еко-готель у Кам\'янці-Подільському',
+    title: 'Тарас Бульба - Готельний комплекс у Кам\'янці-Подільському',
     description:
-      'Затишний еко-готель у серці Кам\'янця-Подільського. 17 номерів, домашня кухня, 2 хвилини до Старої фортеці та Смотрицького каньйону.',
-    images: [
-      {
-        url: 'https://smotrytska-perlyna.itkamianets.com/logo/logo.png', // ЗМІНЕНО: на logo.png
-        width: 512, // ЗМІНЕНО: квадратний розмір
-        height: 512, // ЗМІНЕНО: квадратний розмір
-        alt: 'Еко-готель Смотрицька Перлина',
-      },
-    ],
-    siteName: 'Смотрицька Перлина',
+      'Дух козацтва у серці старого міста. 48 номерів, концептуальний ресторан, сучасний СПА-центр.',
+    siteName: 'Тарас Бульба',
     locale: 'uk_UA',
-  },
-  twitter: {
-    card: 'summary', // ЗМІНЕНО: з summary_large_image на summary (це дає маленьке фото справа)
-    title: 'Смотрицька Перлина - Еко-готель у Кам\'янці-Подільському',
-    description:
-      'Еко-готель на 17 номерів за 2 хвилини від Старої фортеці. Домашня кухня та відпочинок у Кам\'янці-Подільському.',
-    images: ['https://smotrytska-perlyna.itkamianets.com/logo/logo.png'], // ЗМІНЕНО: на logo.png
   },
   icons: {
     icon: '/logo/fvicon.ico',
   },
-  metadataBase: new URL('https://smotrytska-perlyna.itkamianets.com'),
 }
 
 export const viewport: Viewport = {
-  themeColor: '#2c2418',
+  themeColor: '#1a1510',
   width: 'device-width',
   initialScale: 1,
 }
@@ -75,7 +57,7 @@ export default function RootLayout({
   return (
     <html lang="uk">
       <body
-        className={`${inter.variable} ${playfair.variable} font-sans antialiased`}
+        className={`${inter.variable} ${cormorant.variable} font-sans antialiased`}
       >
         {children}
         <Analytics />

@@ -3,12 +3,11 @@
 import { I18nProvider } from "@/lib/i18n";
 import Navbar from "@/components/navbar";
 import Hero from "@/components/hero";
-import Highlights from "@/components/highlights";
+import About from "@/components/about";
+import Amenities from "@/components/amenities";
 import Rooms from "@/components/rooms";
-import Dining from "@/components/dining";
-import Gallery from "@/components/gallery";
+import Restaurant from "@/components/restaurant";
 import Testimonials from "@/components/testimonials";
-import LocationFaq from "@/components/location-faq";
 import Footer from "@/components/footer";
 import ScrollToTop from "@/components/scroll-to-top";
 
@@ -18,12 +17,11 @@ export default function Home() {
       <main>
         <Navbar />
         <Hero />
-        <Highlights />
+        <About />
+        <Amenities />
         <Rooms />
-        <Dining />
-        <Gallery />
+        <Restaurant />
         <Testimonials />
-        <LocationFaq />
         <Footer />
         <ScrollToTop />
       </main>
