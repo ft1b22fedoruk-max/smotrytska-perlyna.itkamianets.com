@@ -51,10 +51,7 @@ export default function Hero() {
         <div className="mx-auto max-w-5xl px-5 lg:px-8">
           <div className="flex flex-col gap-0 border border-primary-foreground/20 bg-primary/90 backdrop-blur-md md:flex-row md:items-stretch">
             {/* Check-in */}
-            <div
-              className="group flex flex-1 cursor-pointer items-center gap-3 border-b border-primary-foreground/10 px-6 py-4 transition-colors hover:bg-primary-foreground/5 md:border-b-0 md:border-r md:py-5"
-              onClick={() => checkinRef.current?.showPicker()}
-            >
+            <label className="group relative flex flex-1 cursor-pointer items-center gap-3 border-b border-primary-foreground/10 px-6 py-4 transition-colors hover:bg-primary-foreground/5 md:border-b-0 md:border-r md:py-5">
               <CalendarDays className="h-5 w-5 shrink-0 text-accent" />
               <div className="flex-1 min-w-0">
                 <span className="block text-[10px] font-semibold uppercase tracking-[0.2em] text-primary-foreground/50">
@@ -63,22 +60,18 @@ export default function Hero() {
                 <span className="mt-0.5 block truncate text-sm font-medium text-primary-foreground">
                   {formatDate(checkin) || t.hero.selectDate}
                 </span>
-                <input
-                  ref={checkinRef}
-                  type="date"
-                  value={checkin}
-                  onChange={(e) => setCheckin(e.target.value)}
-                  className="sr-only"
-                  tabIndex={-1}
-                />
               </div>
-            </div>
+              <input
+                ref={checkinRef}
+                type="date"
+                value={checkin}
+                onChange={(e) => setCheckin(e.target.value)}
+                className="absolute inset-0 cursor-pointer opacity-0"
+              />
+            </label>
 
             {/* Check-out */}
-            <div
-              className="group flex flex-1 cursor-pointer items-center gap-3 border-b border-primary-foreground/10 px-6 py-4 transition-colors hover:bg-primary-foreground/5 md:border-b-0 md:border-r md:py-5"
-              onClick={() => checkoutRef.current?.showPicker()}
-            >
+            <label className="group relative flex flex-1 cursor-pointer items-center gap-3 border-b border-primary-foreground/10 px-6 py-4 transition-colors hover:bg-primary-foreground/5 md:border-b-0 md:border-r md:py-5">
               <CalendarDays className="h-5 w-5 shrink-0 text-accent" />
               <div className="flex-1 min-w-0">
                 <span className="block text-[10px] font-semibold uppercase tracking-[0.2em] text-primary-foreground/50">
@@ -87,16 +80,15 @@ export default function Hero() {
                 <span className="mt-0.5 block truncate text-sm font-medium text-primary-foreground">
                   {formatDate(checkout) || t.hero.selectDate}
                 </span>
-                <input
-                  ref={checkoutRef}
-                  type="date"
-                  value={checkout}
-                  onChange={(e) => setCheckout(e.target.value)}
-                  className="sr-only"
-                  tabIndex={-1}
-                />
               </div>
-            </div>
+              <input
+                ref={checkoutRef}
+                type="date"
+                value={checkout}
+                onChange={(e) => setCheckout(e.target.value)}
+                className="absolute inset-0 cursor-pointer opacity-0"
+              />
+            </label>
 
             {/* Guests */}
             <div className="relative flex-1" ref={guestsRef}>
