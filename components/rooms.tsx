@@ -1,128 +1,108 @@
 "use client";
 
-import { useState } from "react";
-import { Maximize, Eye, BedDouble, Sparkles, ChevronLeft, ChevronRight } from "lucide-react";
-import { useI18n } from "@/lib/i18n";
-
-const roomImages = [
-  ["/gallery/7.webp", "/gallery/8.webp", "/gallery/9.webp"],
-  ["/gallery/10.webp", "/gallery/11.webp", "/gallery/12.webp"],
-  ["/gallery/13.webp", "/gallery/14.webp", "/gallery/15.webp"],
-];
-
-function RoomCarousel({ images, title }: { images: string[]; title: string }) {
-  const [current, setCurrent] = useState(0);
-  const total = images.length;
-
-  const prev = () => setCurrent((c) => (c - 1 + total) % total);
-  const next = () => setCurrent((c) => (c + 1) % total);
-
-  return (
-    <div className="relative aspect-[4/3] overflow-hidden">
-      {images.map((src, i) => (
-        <img
-          key={src}
-          src={src}
-          alt={`${title} - ${i + 1}`}
-          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${
-            i === current ? "opacity-100" : "opacity-0 pointer-events-none"
-          }`}
-        />
-      ))}
-
-      <button
-        onClick={prev}
-        aria-label="Previous photo"
-        className="absolute left-3 top-1/2 -translate-y-1/2 z-10 flex h-8 w-8 items-center justify-center bg-primary/40 text-primary-foreground backdrop-blur-sm transition-all hover:bg-primary/60 cursor-pointer"
-      >
-        <ChevronLeft className="h-4 w-4" />
-      </button>
-      <button
-        onClick={next}
-        aria-label="Next photo"
-        className="absolute right-3 top-1/2 -translate-y-1/2 z-10 flex h-8 w-8 items-center justify-center bg-primary/40 text-primary-foreground backdrop-blur-sm transition-all hover:bg-primary/60 cursor-pointer"
-      >
-        <ChevronRight className="h-4 w-4" />
-      </button>
-
-      <div className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1.5">
-        {images.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => setCurrent(i)}
-            aria-label={`Photo ${i + 1}`}
-            className={`h-1 transition-all duration-300 cursor-pointer ${
-              i === current
-                ? "w-5 bg-primary-foreground"
-                : "w-1 bg-primary-foreground/40 hover:bg-primary-foreground/60"
-            }`}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
+import { useRef } from "react";
+import { Maximize, MapPin, BedDouble, ChevronLeft, ChevronRight } from "lucide-react";
+import { useI18n, BOOKING_URL } from "@/lib/i18n";
 
 export default function Rooms() {
   const { t } = useI18n();
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const scrollBy = (dir: number) => {
+    if (!scrollRef.current) return;
+    const cardWidth = scrollRef.current.querySelector("div")?.offsetWidth ?? 340;
+    scrollRef.current.scrollBy({ left: dir * (cardWidth + 24), behavior: "smooth" });
+  };
 
   return (
     <section id="rooms" className="bg-secondary py-20 md:py-28">
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
-        <div className="text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.3em] text-accent">
-            {t.rooms.subtitle}
-          </p>
-          <h2 className="mt-4 font-serif text-3xl font-bold text-foreground md:text-4xl lg:text-5xl text-balance">
-            {t.rooms.title}
-          </h2>
+        <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-end">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.3em] text-accent">
+              {t.rooms.subtitle}
+            </p>
+            <h2 className="mt-4 font-serif text-3xl font-bold text-foreground text-balance md:text-4xl lg:text-5xl">
+              {t.rooms.title}
+            </h2>
+          </div>
+          {/* Carousel arrows */}
+          <div className="flex gap-2">
+            <button
+              onClick={() => scrollBy(-1)}
+              aria-label="Previous rooms"
+              className="flex h-10 w-10 cursor-pointer items-center justify-center border border-border text-foreground transition-colors hover:bg-foreground hover:text-background"
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </button>
+            <button
+              onClick={() => scrollBy(1)}
+              aria-label="Next rooms"
+              className="flex h-10 w-10 cursor-pointer items-center justify-center border border-border text-foreground transition-colors hover:bg-foreground hover:text-background"
+            >
+              <ChevronRight className="h-5 w-5" />
+            </button>
+          </div>
         </div>
 
-        <div className="mt-14 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        {/* Horizontal scrollable carousel */}
+        <div
+          ref={scrollRef}
+          className="mt-10 flex snap-x snap-mandatory gap-6 overflow-x-auto pb-4 scrollbar-none"
+          style={{
+            scrollbarWidth: "none",
+            msOverflowStyle: "none",
+          }}
+        >
           {t.rooms.items.map((room, idx) => (
             <div
               key={idx}
-              className="group overflow-hidden border border-border bg-card transition-shadow hover:shadow-lg"
+              className="w-[300px] shrink-0 snap-start overflow-hidden border border-border bg-card transition-shadow hover:shadow-lg md:w-[340px]"
             >
-              <RoomCarousel images={roomImages[idx]} title={room.title} />
-              <div className="p-6">
-                <h3 className="font-serif text-xl font-bold text-card-foreground">
+              {/* Room image */}
+              <div className="relative aspect-[4/3] overflow-hidden">
+                <img
+                  src={room.image}
+                  alt={room.title}
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                {room.price && (
+                  <div className="absolute bottom-0 left-0 bg-accent px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-card">
+                    {room.price}
+                  </div>
+                )}
+              </div>
+
+              <div className="p-5">
+                <h3 className="font-serif text-lg font-bold text-card-foreground">
                   {room.title}
                 </h3>
 
-                <div className="mt-4 flex flex-col gap-2">
+                <div className="mt-3 flex flex-col gap-1.5">
+                  {room.area && (
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <Maximize className="h-3.5 w-3.5 shrink-0 text-accent" />
+                      <span>{room.area}</span>
+                    </div>
+                  )}
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Maximize className="h-4 w-4 shrink-0 text-accent" />
-                    <span>{room.area}</span>
+                    <MapPin className="h-3.5 w-3.5 shrink-0 text-accent" />
+                    <span>{room.feature}</span>
                   </div>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Eye className="h-4 w-4 shrink-0 text-accent" />
-                    <span>{room.view}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <BedDouble className="h-4 w-4 shrink-0 text-accent" />
+                    <BedDouble className="h-3.5 w-3.5 shrink-0 text-accent" />
                     <span>{room.bed}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Sparkles className="h-4 w-4 shrink-0 text-accent" />
-                    <span>{room.extras}</span>
                   </div>
                 </div>
 
-                <div className="mt-6 flex items-center gap-3">
-                  <a
-                    href="#footer"
-                    className="flex-1 border border-foreground/20 py-2.5 text-center text-xs font-semibold uppercase tracking-[0.15em] text-foreground transition-all hover:bg-foreground hover:text-background"
-                  >
-                    {t.rooms.details}
-                  </a>
-                  <a
-                    href="#footer"
-                    className="flex-1 bg-primary py-2.5 text-center text-xs font-semibold uppercase tracking-[0.15em] text-primary-foreground transition-all hover:bg-primary/90"
-                  >
-                    {t.rooms.book}
-                  </a>
-                </div>
+                <a
+                  href={BOOKING_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-5 block w-full bg-primary py-2.5 text-center text-xs font-semibold uppercase tracking-[0.15em] text-primary-foreground transition-all hover:bg-primary/90"
+                >
+                  {t.rooms.book}
+                </a>
               </div>
             </div>
           ))}

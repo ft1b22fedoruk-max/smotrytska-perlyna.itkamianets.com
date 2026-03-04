@@ -13,7 +13,7 @@ export default function About() {
             <p className="text-xs font-semibold uppercase tracking-[0.3em] text-accent">
               {t.about.subtitle}
             </p>
-            <h2 className="mt-4 font-serif text-3xl font-bold leading-tight text-primary-foreground md:text-4xl lg:text-5xl text-balance">
+            <h2 className="mt-4 font-serif text-3xl font-bold leading-tight text-primary-foreground text-balance md:text-4xl lg:text-5xl">
               {t.about.title}
             </h2>
             <p className="mt-6 text-base leading-relaxed text-primary-foreground/60 md:text-lg">
@@ -24,15 +24,15 @@ export default function About() {
           <div className="grid grid-cols-2 gap-3">
             <div className="aspect-[3/4] overflow-hidden">
               <img
-                src="/gallery/3.webp"
-                alt="Готель Тарас Бульба - інтер'єр"
+                src="/gallery/lobby.jpg"
+                alt="Готель Тарас Бульба - інтер'єр лобі"
                 className="h-full w-full object-cover"
               />
             </div>
-            <div className="aspect-[3/4] overflow-hidden mt-8">
+            <div className="mt-8 aspect-[3/4] overflow-hidden">
               <img
-                src="/gallery/5.webp"
-                alt="Готель Тарас Бульба - вигляд"
+                src="/gallery/exterior.jpg"
+                alt="Готель Тарас Бульба - зовнішній вигляд"
                 className="h-full w-full object-cover"
               />
             </div>

@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react";
 import { CalendarDays, Users, ChevronDown } from "lucide-react";
-import { useI18n } from "@/lib/i18n";
+import { useI18n, BOOKING_URL } from "@/lib/i18n";
 
 export default function Hero() {
   const { t } = useI18n();
@@ -17,15 +17,19 @@ export default function Hero() {
   const formatDate = (val: string) => {
     if (!val) return null;
     const d = new Date(val);
-    return d.toLocaleDateString("uk-UA", { day: "numeric", month: "long", year: "numeric" });
+    return d.toLocaleDateString("uk-UA", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
   };
 
   return (
     <section id="hero" className="relative min-h-screen w-full">
-      {/* Background image placeholder */}
+      {/* Background image */}
       <div className="absolute inset-0">
         <img
-          src="/gallery/1.webp"
+          src="/gallery/hero.jpg"
           alt="Готельний комплекс Тарас Бульба"
           className="h-full w-full object-cover"
         />
@@ -37,7 +41,7 @@ export default function Hero() {
           <p className="text-sm font-medium uppercase tracking-[0.3em] text-primary-foreground/60">
             Taras Bulba Hotel Complex
           </p>
-          <h1 className="mt-6 font-serif text-4xl font-bold leading-[1.1] tracking-tight text-primary-foreground sm:text-5xl md:text-6xl lg:text-7xl text-balance">
+          <h1 className="mt-6 font-serif text-4xl font-bold leading-[1.1] tracking-tight text-primary-foreground text-balance sm:text-5xl md:text-6xl lg:text-7xl">
             {t.hero.headline}
           </h1>
           <p className="mt-6 max-w-lg text-base leading-relaxed text-primary-foreground/70 md:text-lg">
@@ -53,7 +57,7 @@ export default function Hero() {
             {/* Check-in */}
             <label className="group relative flex flex-1 cursor-pointer items-center gap-3 border-b border-primary-foreground/10 px-6 py-4 transition-colors hover:bg-primary-foreground/5 md:border-b-0 md:border-r md:py-5">
               <CalendarDays className="h-5 w-5 shrink-0 text-accent" />
-              <div className="flex-1 min-w-0">
+              <div className="min-w-0 flex-1">
                 <span className="block text-[10px] font-semibold uppercase tracking-[0.2em] text-primary-foreground/50">
                   {t.hero.checkin}
                 </span>
@@ -73,7 +77,7 @@ export default function Hero() {
             {/* Check-out */}
             <label className="group relative flex flex-1 cursor-pointer items-center gap-3 border-b border-primary-foreground/10 px-6 py-4 transition-colors hover:bg-primary-foreground/5 md:border-b-0 md:border-r md:py-5">
               <CalendarDays className="h-5 w-5 shrink-0 text-accent" />
-              <div className="flex-1 min-w-0">
+              <div className="min-w-0 flex-1">
                 <span className="block text-[10px] font-semibold uppercase tracking-[0.2em] text-primary-foreground/50">
                   {t.hero.checkout}
                 </span>
@@ -97,7 +101,7 @@ export default function Hero() {
                 onClick={() => setGuestsOpen(!guestsOpen)}
               >
                 <Users className="h-5 w-5 shrink-0 text-accent" />
-                <div className="flex-1 min-w-0">
+                <div className="min-w-0 flex-1">
                   <span className="block text-[10px] font-semibold uppercase tracking-[0.2em] text-primary-foreground/50">
                     {t.hero.guests}
                   </span>
@@ -105,18 +109,28 @@ export default function Hero() {
                     {guests} {t.hero.adults}
                   </span>
                 </div>
-                <ChevronDown className={`h-4 w-4 text-primary-foreground/50 transition-transform ${guestsOpen ? "rotate-180" : ""}`} />
+                <ChevronDown
+                  className={`h-4 w-4 text-primary-foreground/50 transition-transform ${guestsOpen ? "rotate-180" : ""}`}
+                />
               </div>
               {guestsOpen && (
                 <>
-                  <div className="fixed inset-0 z-30" onClick={() => setGuestsOpen(false)} />
+                  <div
+                    className="fixed inset-0 z-30"
+                    onClick={() => setGuestsOpen(false)}
+                  />
                   <div className="absolute left-0 right-0 top-full z-40 border border-primary-foreground/20 bg-primary shadow-xl">
                     {[1, 2, 3, 4, 5, 6].map((n) => (
                       <button
                         key={n}
-                        onClick={() => { setGuests(n); setGuestsOpen(false); }}
-                        className={`flex w-full items-center px-6 py-3 text-sm font-medium transition-colors hover:bg-primary-foreground/10 ${
-                          guests === n ? "text-accent font-bold" : "text-primary-foreground/70"
+                        onClick={() => {
+                          setGuests(n);
+                          setGuestsOpen(false);
+                        }}
+                        className={`flex w-full cursor-pointer items-center px-6 py-3 text-sm font-medium transition-colors hover:bg-primary-foreground/10 ${
+                          guests === n
+                            ? "font-bold text-accent"
+                            : "text-primary-foreground/70"
                         }`}
                       >
                         {n} {t.hero.adults}
@@ -127,10 +141,12 @@ export default function Hero() {
               )}
             </div>
 
-            {/* CTA */}
+            {/* CTA - links to Booking.com */}
             <a
-              href="#rooms"
-              className="flex items-center justify-center bg-accent px-8 py-4 text-xs font-semibold uppercase tracking-[0.2em] text-card transition-all hover:bg-accent/90 md:py-5 md:shrink-0"
+              href={BOOKING_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center bg-accent px-8 py-4 text-xs font-semibold uppercase tracking-[0.2em] text-card transition-all hover:bg-accent/90 md:shrink-0 md:py-5"
             >
               {t.hero.search}
             </a>

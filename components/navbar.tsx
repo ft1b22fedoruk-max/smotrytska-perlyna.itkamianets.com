@@ -2,9 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
-import { useI18n } from "@/lib/i18n";
-
-const BOOKING_URL = "#rooms";
+import { useI18n, BOOKING_URL } from "@/lib/i18n";
 
 export default function Navbar() {
   const { t } = useI18n();
@@ -16,6 +14,7 @@ export default function Navbar() {
     { label: t.nav.rooms, href: "#rooms" },
     { label: t.nav.restaurant, href: "#restaurant" },
     { label: t.nav.spa, href: "#amenities" },
+    { label: t.nav.gallery, href: "#gallery" },
     { label: t.nav.reviews, href: "#reviews" },
     { label: t.nav.contacts, href: "#footer" },
   ];
@@ -34,21 +33,23 @@ export default function Navbar() {
     } else {
       document.body.style.overflow = "";
     }
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [mobileOpen]);
 
   return (
     <nav
       className={`fixed top-0 right-0 left-0 z-50 transition-all duration-500 ${
         scrolled
-          ? "bg-primary/95 backdrop-blur-md border-b border-primary-foreground/10"
+          ? "border-b border-primary-foreground/10 bg-primary/95 backdrop-blur-md"
           : "bg-transparent"
       }`}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-8 lg:py-5">
         {/* Logo */}
         <a href="#hero" className="text-primary-foreground">
-          <span className="font-serif text-xl font-bold tracking-[0.15em] md:text-2xl text-primary-foreground">
+          <span className="font-serif text-xl font-bold tracking-[0.15em] text-primary-foreground md:text-2xl">
             TARAS BULBA
           </span>
         </a>
@@ -70,6 +71,8 @@ export default function Navbar() {
         <div className="flex items-center gap-4">
           <a
             href={BOOKING_URL}
+            target="_blank"
+            rel="noopener noreferrer"
             className="hidden rounded-none border border-primary-foreground/60 px-6 py-2.5 text-xs font-semibold uppercase tracking-[0.2em] text-primary-foreground transition-all hover:bg-primary-foreground hover:text-primary lg:inline-flex"
           >
             {t.nav.book}
@@ -80,7 +83,11 @@ export default function Navbar() {
             className="flex h-10 w-10 items-center justify-center text-primary-foreground lg:hidden"
             aria-label="Toggle menu"
           >
-            {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            {mobileOpen ? (
+              <X className="h-6 w-6" />
+            ) : (
+              <Menu className="h-6 w-6" />
+            )}
           </button>
         </div>
       </div>
@@ -113,6 +120,8 @@ export default function Navbar() {
             ))}
             <a
               href={BOOKING_URL}
+              target="_blank"
+              rel="noopener noreferrer"
               onClick={() => setMobileOpen(false)}
               className="mt-4 border border-primary-foreground/60 px-8 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-primary-foreground transition-all hover:bg-primary-foreground hover:text-primary"
             >

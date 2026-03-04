@@ -4,16 +4,28 @@ import { createContext, useContext, useState, type ReactNode } from "react";
 
 export type Locale = "UK";
 
+export const BOOKING_URL =
+  "https://www.booking.com/hotel/ua/taras-bulba.ru.html?aid=356980&label=gog235jc-10CAso6QFCC3RhcmFzLWJ1bGJhSClYA2jpAYgBAZgBM7gBF8gBDNgBA-gBAfgBAYgCAagCAbgCrOafzQbAAgHSAiQ0YTRjMmY5Ni05OWQ0LTQyMjMtOTRhOS1jMTIzYjkxMmQ5NjbYAgHgAgE&sid=ed0bc465df4aea335259953c02cc2b3d&all_sr_blocks=44287708_416361001_2_1_0&checkin=2026-03-03&checkout=2026-03-04&dest_id=-1040849&dest_type=city&dist=0&group_adults=2&group_children=0&hapos=1&highlighted_blocks=44287708_416361001_2_1_0&hpos=1&matching_block_id=44287708_416361001_2_1_0&no_rooms=1&req_adults=2&req_children=0&room1=A%2CA&sb_price_type=total&sr_order=popularity&sr_pri_blocks=44287708_416361001_2_1_0__330000&srepoch=1772614448&srpvid=eeac3e965a260535&type=total&ucfs=1&";
+
+export const MENU_URL = "https://taras-bulba.choiceqr.com/menu";
+
 interface RoomItem {
   title: string;
   area: string;
-  view: string;
+  feature: string;
   bed: string;
-  extras: string;
+  price?: string;
+  image: string;
 }
 
 interface DishItem {
   name: string;
+  price: string;
+}
+
+interface FaqItem {
+  title: string;
+  content: string;
 }
 
 interface Translations {
@@ -22,6 +34,7 @@ interface Translations {
     rooms: string;
     restaurant: string;
     spa: string;
+    gallery: string;
     reviews: string;
     contacts: string;
     book: string;
@@ -50,14 +63,19 @@ interface Translations {
     subtitle: string;
     title: string;
     items: RoomItem[];
-    details: string;
     book: string;
   };
   restaurant: {
     subtitle: string;
     title: string;
     description: string;
+    breakfast: string;
     dishes: DishItem[];
+    menuBtn: string;
+  };
+  gallery: {
+    subtitle: string;
+    title: string;
   };
   reviews: {
     subtitle: string;
@@ -66,6 +84,15 @@ interface Translations {
     ratingValue: string;
     testimonials: { name: string; text: string; rating: number }[];
   };
+  location: {
+    subtitle: string;
+    title: string;
+    hotelLabel: string;
+    hotelAddress: string;
+    restaurantLabel: string;
+    restaurantAddress: string;
+    faq: FaqItem[];
+  };
   footer: {
     brandName: string;
     brandDesc: string;
@@ -73,6 +100,8 @@ interface Translations {
     addressHeading: string;
     hotelAddress: string;
     restaurantAddress: string;
+    hotelPhone: string;
+    restaurantPhone: string;
     instagramHotel: string;
     instagramRestaurant: string;
     copyright: string;
@@ -82,105 +111,224 @@ interface Translations {
 const translations: Record<Locale, Translations> = {
   UK: {
     nav: {
-      home: "\u0413\u043E\u043B\u043E\u0432\u043D\u0430",
-      rooms: "\u041D\u043E\u043C\u0435\u0440\u0438",
-      restaurant: "\u0420\u0435\u0441\u0442\u043E\u0440\u0430\u043D",
-      spa: "\u0421\u041F\u0410",
-      reviews: "\u0412\u0456\u0434\u0433\u0443\u043A\u0438",
-      contacts: "\u041A\u043E\u043D\u0442\u0430\u043A\u0442\u0438",
-      book: "\u0417\u0410\u0411\u0420\u041E\u041D\u042E\u0412\u0410\u0422\u0418",
+      home: "Головна",
+      rooms: "Номери",
+      restaurant: "Ресторан",
+      spa: "СПА",
+      gallery: "Галерея",
+      reviews: "Відгуки",
+      contacts: "Контакти",
+      book: "ЗАБРОНЮВАТИ",
     },
     hero: {
-      headline: "\u0414\u0423\u0425 \u041A\u041E\u0417\u0410\u0426\u0422\u0412\u0410 \u0423 \u0421\u0415\u0420\u0426\u0406 \u0421\u0422\u0410\u0420\u041E\u0413\u041E \u041C\u0406\u0421\u0422\u0410.",
-      subheadline: "\u0406\u0441\u0442\u043E\u0440\u0438\u0447\u043D\u0430 \u0441\u043F\u0430\u0434\u0449\u0438\u043D\u0430 \u0442\u0430 \u0441\u0443\u0447\u0430\u0441\u043D\u0438\u0439 \u043A\u043E\u043C\u0444\u043E\u0440\u0442 \u0443 \u041A\u0430\u043C\u2019\u044F\u043D\u0446\u0456-\u041F\u043E\u0434\u0456\u043B\u044C\u0441\u044C\u043A\u043E\u043C\u0443.",
-      checkin: "\u041F\u0440\u0438\u0457\u0437\u0434",
-      checkout: "\u0412\u0438\u0457\u0437\u0434",
-      guests: "\u0413\u043E\u0441\u0442\u0456",
-      selectDate: "\u041E\u0431\u0435\u0440\u0456\u0442\u044C \u0434\u0430\u0442\u0443",
-      adults: "\u043E\u0441\u0456\u0431",
-      search: "\u041F\u0415\u0420\u0415\u0412\u0406\u0420\u0418\u0422\u0418 \u0414\u041E\u0421\u0422\u0423\u041F\u041D\u0406\u0421\u0422\u042C",
+      headline: "ДУХ КОЗАЦТВА У СЕРЦІ СТАРОГО МІСТА.",
+      subheadline:
+        "Історична спадщина та сучасний комфорт у Кам\u2019янці-Подільському.",
+      checkin: "Приїзд",
+      checkout: "Виїзд",
+      guests: "Гості",
+      selectDate: "Оберіть дату",
+      adults: "осіб",
+      search: "ПЕРЕВІРИТИ ДОСТУПНІСТЬ",
     },
     about: {
-      subtitle: "ABOUT US",
-      title: "\u041F\u0420\u041E \u0413\u041E\u0422\u0415\u041B\u042C",
-      description: "\u0413\u043E\u0442\u0435\u043B\u044C\u043D\u0438\u0439 \u043A\u043E\u043C\u043F\u043B\u0435\u043A\u0441 \u00AB\u0422\u0430\u0440\u0430\u0441 \u0411\u0443\u043B\u044C\u0431\u0430\u00BB \u0440\u043E\u0437\u0442\u0430\u0448\u043E\u0432\u0430\u043D\u0438\u0439 \u0443 \u043D\u0430\u0439\u0433\u043E\u043B\u043E\u0432\u043D\u0456\u0448\u0456\u0439 \u0456\u0441\u0442\u043E\u0440\u0438\u0447\u043D\u0456\u0439 \u043C\u0456\u0441\u0446\u0435\u0432\u043E\u0441\u0442\u0456 \u041A\u0430\u043C\u2019\u044F\u043D\u0446\u044F-\u041F\u043E\u0434\u0456\u043B\u044C\u0441\u044C\u043A\u043E\u0433\u043E. \u041C\u0438 \u043F\u043E\u0454\u0434\u043D\u0443\u0454\u043C\u043E \u0433\u043B\u0438\u0431\u043E\u043A\u0443 \u043F\u043E\u0432\u0430\u0433\u0443 \u0434\u043E \u0443\u043A\u0440\u0430\u0457\u043D\u0441\u044C\u043A\u043E\u0457 \u0456\u0441\u0442\u043E\u0440\u0456\u0457 \u0437 \u0432\u0438\u0441\u043E\u043A\u0438\u043C\u0438 \u0441\u0442\u0430\u043D\u0434\u0430\u0440\u0442\u0430\u043C\u0438 \u0441\u0443\u0447\u0430\u0441\u043D\u043E\u0433\u043E \u0441\u0435\u0440\u0432\u0456\u0441\u0443. \u041A\u043E\u043C\u043F\u043B\u0435\u043A\u0441 \u043D\u0430\u043B\u0456\u0447\u0443\u0454 48 \u043D\u043E\u043C\u0435\u0440\u0456\u0432 \u0442\u0430 \u0441\u0443\u0447\u0430\u0441\u043D\u0438\u0439 \u043E\u0437\u0434\u043E\u0440\u043E\u0432\u0447\u0438\u0439 \u0421\u041F\u0410-\u0446\u0435\u043D\u0442\u0440.",
+      subtitle: "ПРО ГОТЕЛЬ",
+      title: "ПРО ГОТЕЛЬ",
+      description:
+        "Готельний комплекс \u00ABТарас Бульба\u00BB розташований у серці Старого міста. Ми поєднуємо глибоку повагу до української історії з високими стандартами сучасного сервісу. Комплекс налічує два корпуси (2007 та 2020 років) на 48 номерів, а також сучасний оздоровчий СПА-центр.",
     },
     amenities: {
-      subtitle: "\u0417\u0420\u0423\u0427\u041D\u041E\u0421\u0422\u0406",
-      title: "\u0412\u0410\u0428 \u0417\u0410\u0422\u0418\u0428\u041E\u041A \u2013 \u041D\u0410\u0428 \u041F\u0420\u0406\u041E\u0420\u0418\u0422\u0415\u0422",
+      subtitle: "ЗРУЧНОСТІ",
+      title: "ВАШ ЗАТИШОК \u2013 НАШ ПРІОРИТЕТ",
       items: [
-        { title: "\u0421\u041F\u0410-\u0446\u0435\u043D\u0442\u0440", desc: "\u0421\u0430\u0443\u043D\u0430, \u0445\u0430\u043C\u0430\u043C, \u043B\u0430\u0437\u043D\u044F" },
-        { title: "\u0411\u0435\u0437\u043A\u043E\u0448\u0442\u043E\u0432\u043D\u0438\u0439 Wi-Fi", desc: "\u0428\u0432\u0438\u0434\u043A\u0456\u0441\u043D\u0438\u0439 \u0456\u043D\u0442\u0435\u0440\u043D\u0435\u0442 \u043D\u0430 \u0432\u0441\u0456\u0439 \u0442\u0435\u0440\u0438\u0442\u043E\u0440\u0456\u0457" },
-        { title: "\u041A\u043E\u043D\u0446\u0435\u043F\u0442\u0443\u0430\u043B\u044C\u043D\u0438\u0439 \u0440\u0435\u0441\u0442\u043E\u0440\u0430\u043D \u0442\u0430 \u0431\u0430\u0440", desc: "\u0410\u0432\u0442\u0435\u043D\u0442\u0438\u0447\u043D\u0430 \u043F\u043E\u0434\u0456\u043B\u044C\u0441\u044C\u043A\u0430 \u043A\u0443\u0445\u043D\u044F" },
-        { title: "Pet-friendly", desc: "\u0414\u043E\u0437\u0432\u043E\u043B\u0435\u043D\u043E \u0437 \u0442\u0432\u0430\u0440\u0438\u043D\u0430\u043C\u0438" },
-        { title: "\u0426\u0456\u043B\u043E\u0434\u043E\u0431\u043E\u0432\u0430 \u0441\u0442\u0456\u0439\u043A\u0430 \u0440\u0435\u0454\u0441\u0442\u0440\u0430\u0446\u0456\u0457", desc: "\u041A\u043E\u043C\u0444\u043E\u0440\u0442\u043D\u0438\u0439 \u0437\u0430\u0457\u0437\u0434 \u0443 \u0431\u0443\u0434\u044C-\u044F\u043A\u0438\u0439 \u0447\u0430\u0441" },
-        { title: "\u0411\u0435\u0437\u043A\u043E\u0448\u0442\u043E\u0432\u043D\u0430 \u043F\u0440\u0438\u0432\u0430\u0442\u043D\u0430 \u043F\u0430\u0440\u043A\u043E\u0432\u043A\u0430", desc: "\u0417\u0430\u043A\u0440\u0438\u0442\u0438\u0439 \u043F\u0430\u0440\u043A\u0456\u043D\u0433 \u043D\u0430 \u0442\u0435\u0440\u0438\u0442\u043E\u0440\u0456\u0457" },
+        {
+          title: "СПА-центр",
+          desc: "Сауна, хамам, традиційна лазня",
+        },
+        {
+          title: "Безкоштовний Wi-Fi",
+          desc: "Швидкісний інтернет на всій території",
+        },
+        {
+          title: "Концептуальний ресторан та бар",
+          desc: "Автентична подільська кухня",
+        },
+        { title: "Pet-friendly", desc: "Дозволено з тваринами" },
+        {
+          title: "Цілодобова стійка реєстрації",
+          desc: "Комфортний заїзд у будь-який час",
+        },
+        {
+          title: "Безкоштовна приватна парковка",
+          desc: "Закритий паркінг на території",
+        },
       ],
     },
     rooms: {
-      subtitle: "\u0420\u041E\u0417\u041C\u0406\u0429\u0415\u041D\u041D\u042F",
-      title: "\u0420\u041E\u0417\u041A\u0406\u0428 \u0423 \u041A\u041E\u0416\u041D\u0406\u0419 \u0414\u0415\u0422\u0410\u041B\u0406",
+      subtitle: "РОЗМІЩЕННЯ",
+      title: "РОЗКІШ У КОЖНІЙ ДЕТАЛІ",
       items: [
         {
           title: "Studio",
-          area: "35 \u043A\u0432.\u043C",
-          view: "\u0412\u043D\u0443\u0442\u0440\u0456\u0448\u043D\u0456\u0439 \u0434\u0432\u0456\u0440",
-          bed: "1 \u0432\u0435\u043B\u0438\u043A\u0435 \u043B\u0456\u0436\u043A\u043E + \u0434\u0438\u0432\u0430\u043D",
-          extras: "\u041A\u043E\u043D\u0434\u0438\u0446\u0456\u043E\u043D\u0435\u0440, Wi-Fi",
+          area: "35 кв.м",
+          feature: "Внутрішній двір",
+          bed: "1 велике ліжко + диван",
+          price: "Від 800 грн/ніч",
+          image: "/gallery/room-studio.jpg",
         },
         {
           title: "Junior Suite",
-          area: "35 \u043A\u0432.\u043C",
-          view: "\u0412\u0438\u0434 \u043D\u0430 \u043C\u0456\u0441\u0442\u043E",
-          bed: "\u0417\u043E\u043D\u0430 \u0432\u0456\u0434\u043F\u043E\u0447\u0438\u043D\u043A\u0443",
-          extras: "\u041A\u043E\u043D\u0434\u0438\u0446\u0456\u043E\u043D\u0435\u0440, Wi-Fi",
+          area: "35 кв.м",
+          feature: "Вид на місто",
+          bed: "Зона відпочинку",
+          price: "Від 900 грн/ніч",
+          image: "/gallery/room-junior.jpg",
         },
         {
           title: "Studio Apartment",
-          area: "50 \u043A\u0432.\u043C",
-          view: "\u0412\u0438\u0434 \u043D\u0430 \u043F\u0430\u043C\u2019\u044F\u0442\u043A\u0438",
-          bed: "\u0412\u0430\u043D\u043D\u0430",
-          extras: "\u041A\u043E\u043D\u0434\u0438\u0446\u0456\u043E\u043D\u0435\u0440, Wi-Fi, \u043C\u0456\u043D\u0456-\u0431\u0430\u0440",
+          area: "50 кв.м",
+          feature: "Вид на пам\u2019ятки",
+          bed: "Ванна",
+          price: "Від 1200 грн/ніч",
+          image: "/gallery/room-apartment.jpg",
+        },
+        {
+          title: "Family Suite",
+          area: "35 кв.м",
+          feature: "Вид на пам\u2019ятки",
+          bed: "1 двоспальне ліжко + 1 диван-ліжко",
+          image: "/gallery/room-family.jpg",
+        },
+        {
+          title: "Superior Twin Room",
+          area: "20 кв.м",
+          feature: "Вид на місто",
+          bed: "2 окремі ліжка",
+          image: "/gallery/room-twin.jpg",
+        },
+        {
+          title: "Triple Room with Balcony",
+          area: "25 кв.м",
+          feature: "Балкон з видом на місто",
+          bed: "3 місця",
+          image: "/gallery/room-triple.jpg",
+        },
+        {
+          title: "Мансардні номери",
+          area: "",
+          feature: "Оздоблення натуральним деревом",
+          bed: "Затишна атмосфера",
+          image: "/gallery/room-mansard.jpg",
         },
       ],
-      details: "\u0414\u0415\u0422\u0410\u041B\u0406",
-      book: "\u0417\u0410\u0411\u0420\u041E\u041D\u042E\u0412\u0410\u0422\u0418",
+      book: "ЗАБРОНЮВАТИ",
     },
     restaurant: {
-      subtitle: "\u0413\u0410\u0421\u0422\u0420\u041E\u041D\u041E\u041C\u0406\u042F",
-      title: "\u041C\u0415\u041D\u042E \u041D\u0415\u0421\u041A\u041E\u0420\u0415\u041D\u0418\u0425",
-      description: "\u0412\u0456\u0434\u0447\u0443\u0439\u0442\u0435 \u0430\u0432\u0442\u0435\u043D\u0442\u0438\u0447\u043D\u0443 \u043F\u043E\u0434\u0456\u043B\u044C\u0441\u044C\u043A\u0443 \u043A\u0443\u0445\u043D\u044E \u0443 \u043D\u0430\u0448\u043E\u043C\u0443 \u0440\u0435\u0441\u0442\u043E\u0440\u0430\u043D\u0456 \u043D\u0430 \u0432\u0443\u043B. \u0424\u0440\u0430\u043D\u0446\u0438\u0441\u043A\u0430\u043D\u0441\u044C\u043A\u0456\u0439, 10. \u0421\u0442\u0440\u0430\u0432\u0438, \u0449\u043E \u043D\u0430\u0434\u0438\u0445\u0430\u044E\u0442\u044C \u0456\u0441\u0442\u043E\u0440\u0456\u0454\u044E.",
+      subtitle: "ГАСТРОНОМІЯ",
+      title: "МЕНЮ НЕСКОРЕНИХ",
+      description:
+        "Відчуйте автентичну подільську кухню у нашому ресторані на вул. Францисканській, 10. Страви, що надихають історією.",
+      breakfast:
+        "Сніданки для гостей: Ситний \u00ABСніданок для справжніх козаків\u00BB та інші ранкові страви.",
       dishes: [
-        { name: "\u0411\u043E\u0433\u0440\u0430\u0447 \u0443 \u0436\u0438\u0442\u043D\u0456\u0439 \u0445\u043B\u0456\u0431\u0438\u043D\u0456" },
-        { name: "\u0412\u0430\u0440\u0435\u043D\u0438\u043A\u0438 \u0437 \u0440\u0430\u043A\u0430\u043C\u0438" },
-        { name: "\u0414\u0435\u0440\u0443\u043D \u0437 \u0448\u043E\u0432\u0434\u0430\u0440\u0435\u043C" },
-        { name: "\u041F\u043E\u0434\u0456\u043B\u044C\u0441\u044C\u043A\u0438\u0439 \u0441\u0438\u0440\u043D\u0438\u043A" },
+        { name: "Дерун з шовдарем", price: "260 грн" },
+        { name: "Бограч у житній хлібині", price: "230 грн" },
+        { name: "Вареники з раками", price: "260 грн" },
+        { name: "Подільський сирник з грушею", price: "170 грн" },
       ],
+      menuBtn: "ПЕРЕГЛЯНУТИ ПОВНЕ МЕНЮ",
+    },
+    gallery: {
+      subtitle: "ГАЛЕРЕЯ",
+      title: "АТМОСФЕРА КОМПЛЕКСУ",
     },
     reviews: {
-      subtitle: "\u0412\u0406\u0414\u0413\u0423\u041A\u0418",
-      title: "\u0429\u041E \u041A\u0410\u0416\u0423\u0422\u042C \u041D\u0410\u0428\u0406 \u0413\u041E\u0421\u0422\u0406",
+      subtitle: "ВІДГУКИ",
+      title: "ЩО КАЖУТЬ НАШІ ГОСТІ",
       ratingLabel: "Exceptional",
       ratingValue: "9.5",
       testimonials: [
-        { name: "\u041E\u043B\u0435\u043D\u0430 \u041A.", text: "\u041D\u0435\u0439\u043C\u043E\u0432\u0456\u0440\u043D\u0430 \u0430\u0442\u043C\u043E\u0441\u0444\u0435\u0440\u0430! \u0413\u043E\u0442\u0435\u043B\u044C \u043F\u043E\u0454\u0434\u043D\u0443\u0454 \u0456\u0441\u0442\u043E\u0440\u0456\u044E \u0437 \u0441\u0443\u0447\u0430\u0441\u043D\u0438\u043C \u043A\u043E\u043C\u0444\u043E\u0440\u0442\u043E\u043C. \u041E\u0431\u043E\u0432\u2019\u044F\u0437\u043A\u043E\u0432\u043E \u043F\u043E\u0432\u0435\u0440\u043D\u0435\u043C\u043E\u0441\u044F!", rating: 10 },
-        { name: "\u041C\u0430\u043A\u0441\u0438\u043C \u0414.", text: "\u0420\u0435\u0441\u0442\u043E\u0440\u0430\u043D \u2014 \u0441\u043F\u0440\u0430\u0432\u0436\u043D\u044F \u043F\u0435\u0440\u043B\u0438\u043D\u0430. \u0411\u043E\u0433\u0440\u0430\u0447 \u0443 \u0445\u043B\u0456\u0431\u0438\u043D\u0456 \u0442\u0430 \u0432\u0430\u0440\u0435\u043D\u0438\u043A\u0438 \u0437 \u0440\u0430\u043A\u0430\u043C\u0438 \u0437\u0430\u043B\u0438\u0448\u0438\u043B\u0438 \u043D\u0435\u0437\u0430\u0431\u0443\u0442\u043D\u0454 \u0432\u0440\u0430\u0436\u0435\u043D\u043D\u044F.", rating: 10 },
-        { name: "\u0406\u0440\u0438\u043D\u0430 \u0442\u0430 \u0410\u043D\u0434\u0440\u0456\u0439", text: "\u0421\u041F\u0410-\u0446\u0435\u043D\u0442\u0440 \u2014 \u0446\u0435 \u0449\u043E\u0441\u044C \u043D\u0435\u0439\u043C\u043E\u0432\u0456\u0440\u043D\u0435. \u0425\u0430\u043C\u0430\u043C, \u0441\u0430\u0443\u043D\u0430, \u043F\u043E\u0432\u043D\u0438\u0439 \u0440\u0435\u043B\u0430\u043A\u0441. \u041F\u0435\u0440\u0441\u043E\u043D\u0430\u043B \u0434\u0443\u0436\u0435 \u0443\u0432\u0430\u0436\u043D\u0438\u0439.", rating: 10 },
-        { name: "\u0422\u0430\u0440\u0430\u0441 \u041F.", text: "\u0427\u0443\u0434\u043E\u0432\u0435 \u0440\u043E\u0437\u0442\u0430\u0448\u0443\u0432\u0430\u043D\u043D\u044F, \u0447\u0438\u0441\u0442\u0456 \u043D\u043E\u043C\u0435\u0440\u0438, \u043F\u0440\u0438\u0432\u0456\u0442\u043D\u0438\u0439 \u043F\u0435\u0440\u0441\u043E\u043D\u0430\u043B. \u0420\u0430\u0434\u0436\u0443 \u0443\u0441\u0456\u043C, \u0445\u0442\u043E \u043F\u043B\u0430\u043D\u0443\u0454 \u0432\u0456\u0437\u0438\u0442 \u0434\u043E \u041A\u0430\u043C\u2019\u044F\u043D\u0446\u044F!", rating: 9 },
-        { name: "\u041D\u0430\u0442\u0430\u043B\u0456\u044F \u0412.", text: "\u0406\u0434\u0435\u0430\u043B\u044C\u043D\u0435 \u043C\u0456\u0441\u0446\u0435 \u0434\u043B\u044F \u0440\u043E\u043C\u0430\u043D\u0442\u0438\u0447\u043D\u043E\u0457 \u043F\u043E\u0434\u043E\u0440\u043E\u0436\u0456. \u0412\u0438\u0434 \u043D\u0430 \u043C\u0456\u0441\u0442\u043E \u0437 \u043D\u043E\u043C\u0435\u0440\u0430 \u043F\u0440\u043E\u0441\u0442\u043E \u0437\u0430\u0445\u043E\u043F\u043B\u044E\u0454!", rating: 10 },
-        { name: "\u041E\u043B\u0435\u043A\u0441\u0430\u043D\u0434\u0440 \u041C.", text: "\u0426\u0435 \u043D\u0430\u0439\u043A\u0440\u0430\u0449\u0438\u0439 \u0433\u043E\u0442\u0435\u043B\u044C \u0443 \u041A\u0430\u043C\u2019\u044F\u043D\u0446\u0456. \u042F\u043A\u0456\u0441\u0442\u044C \u0441\u0435\u0440\u0432\u0456\u0441\u0443 \u043D\u0430 \u0432\u0438\u0441\u043E\u0442\u0456, \u043A\u0443\u0445\u043D\u044F \u0432\u0438\u0449\u0435 \u0432\u0441\u044F\u043A\u0438\u0445 \u043F\u043E\u0445\u0432\u0430\u043B.", rating: 10 },
+        {
+          name: "Олена К.",
+          text: "Неймовірна атмосфера! Готель поєднує історію з сучасним комфортом. Обов\u2019язково повернемося!",
+          rating: 10,
+        },
+        {
+          name: "Максим Д.",
+          text: "Ресторан \u2014 справжня перлина. Бограч у хлібині та вареники з раками залишили незабутнє враження.",
+          rating: 10,
+        },
+        {
+          name: "Ірина та Андрій",
+          text: "СПА-центр \u2014 це щось неймовірне. Хамам, сауна, повний релакс. Персонал дуже уважний.",
+          rating: 10,
+        },
+        {
+          name: "Тарас П.",
+          text: "Чудове розташування, чисті номери, привітний персонал. Раджу усім, хто планує візит до Кам\u2019янця!",
+          rating: 9,
+        },
+        {
+          name: "Наталія В.",
+          text: "Ідеальне місце для романтичної подорожі. Вид на місто з номера просто захоплює!",
+          rating: 10,
+        },
+        {
+          name: "Олександр М.",
+          text: "Це найкращий готель у Кам\u2019янці. Якість сервісу на висоті, кухня вище всяких похвал.",
+          rating: 10,
+        },
+      ],
+    },
+    location: {
+      subtitle: "ЛОКАЦІЯ ТА ВАЖЛИВА ІНФОРМАЦІЯ",
+      title: "Локація та Важлива інформація",
+      hotelLabel: "Готель",
+      hotelAddress: "вул. Старобульварна, 6, Кам\u2019янець-Подільський",
+      restaurantLabel: "Ресторан",
+      restaurantAddress:
+        "вул. Францисканська, 10, Кам\u2019янець-Подільський",
+      faq: [
+        {
+          title: "Паркування",
+          content:
+            "На території або поруч із готелем є безкоштовна приватна парковка для гостей. Кількість місць може бути обмеженою під час високого сезону.",
+        },
+        {
+          title: "Час заїзду та виїзду",
+          content:
+            "Реєстрація заїзду здійснюється з 14:00, а реєстрація виїзду \u2014 до 12:00.",
+        },
+        {
+          title: "Правила розміщення",
+          content:
+            "Оплата за проживання та послуги здійснюється виключно готівкою (терміналу немає). Просимо врахувати це при плануванні подорожі. Сімейні номери доступні, розміщення з дітьми вітається. При заїзді може стягуватися готівкова застава у розмірі 400 грн, яка повертається під час виїзду.",
+        },
+        {
+          title: "Питна вода в номерах",
+          content:
+            "У кожному номері для вашої зручності надається електричний чайник та базовий набір посуду.",
+        },
+        {
+          title: "Послуга раннього заїзду",
+          content:
+            "Ранній заїзд або пізній виїзд можливі за попереднім запитом, залежно від наявності вільних номерів, і можуть потребувати додаткової оплати.",
+        },
       ],
     },
     footer: {
       brandName: "TARAS BULBA",
-      brandDesc: "\u0406\u0434\u0435\u0430\u043B\u044C\u043D\u0438\u0439 \u0431\u0430\u043B\u0430\u043D\u0441 \u043C\u0456\u0436 \u0456\u0441\u0442\u043E\u0440\u0456\u0454\u044E \u0442\u0430 \u043A\u043E\u043C\u0444\u043E\u0440\u0442\u043E\u043C.",
-      navHeading: "\u041D\u0430\u0432\u0456\u0433\u0430\u0446\u0456\u044F",
-      addressHeading: "\u0410\u0434\u0440\u0435\u0441\u0430",
-      hotelAddress: "\u0413\u043E\u0442\u0435\u043B\u044C: \u0432\u0443\u043B. \u0421\u0442\u0430\u0440\u043E\u0431\u0443\u043B\u044C\u0432\u0430\u0440\u043D\u0430, 6",
-      restaurantAddress: "\u0420\u0435\u0441\u0442\u043E\u0440\u0430\u043D: \u0432\u0443\u043B. \u0424\u0440\u0430\u043D\u0446\u0438\u0441\u043A\u0430\u043D\u0441\u044C\u043A\u0430, 10",
+      brandDesc:
+        "Ідеальний баланс між історією та комфортом.",
+      navHeading: "Навігація",
+      addressHeading: "Адреса",
+      hotelAddress: "Готель: вул. Старобульварна, 6",
+      restaurantAddress: "Ресторан: вул. Францисканська, 10",
+      hotelPhone: "+380673811554",
+      restaurantPhone: "+380677677340",
       instagramHotel: "@tarasbulba.hotel",
       instagramRestaurant: "@tarasbulbakp",
-      copyright: "\u00A9 2026 \u0422\u0430\u0440\u0430\u0441 \u0411\u0443\u043B\u044C\u0431\u0430. \u0423\u0441\u0456 \u043F\u0440\u0430\u0432\u0430 \u0437\u0430\u0445\u0438\u0449\u0435\u043D\u0456.",
+      copyright: "\u00A9 2026 Тарас Бульба. Усі права захищені.",
     },
   },
 };

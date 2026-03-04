@@ -7,7 +7,9 @@ import About from "@/components/about";
 import Amenities from "@/components/amenities";
 import Rooms from "@/components/rooms";
 import Restaurant from "@/components/restaurant";
+import Gallery from "@/components/gallery";
 import Testimonials from "@/components/testimonials";
+import LocationFaq from "@/components/location-faq";
 import Footer from "@/components/footer";
 import ScrollToTop from "@/components/scroll-to-top";
 
@@ -21,7 +23,9 @@ export default function Home() {
         <Amenities />
         <Rooms />
         <Restaurant />
+        <Gallery />
         <Testimonials />
+        <LocationFaq />
         <Footer />
         <ScrollToTop />
       </main>
